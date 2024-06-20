@@ -10,6 +10,7 @@ import { router as auth } from './routes/auth.js';
 
 const app = express();
 app.use(express.json());
+app.use(morgan("dev"));
 app.use("/assets", express.static("assets"));
 app.use(fileUpload());
 

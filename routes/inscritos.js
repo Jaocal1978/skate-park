@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getInscritos, deleteInscrito, updateInscrito, updateInscritoStatus } from "../models/models.js";
+import { getInscritos, deleteInscrito, updateInscrito, updateInscritoStatus, createInscrito } from "../models/models.js";
 
 const router = Router();
 
@@ -25,12 +25,14 @@ router.delete("/", async (req, res) =>
 {
     try 
     {
-        const data = req.query
+        const data = req.query;
         const result = await deleteInscrito(data)
+
+        console.log(result);
 
         res.json(
         {
-            message: `Usuario con email ${data.email}, fue eliminado`
+            message: `Usuario fue eliminado`
         })
     } 
     catch (error) 
@@ -49,8 +51,7 @@ router.put("/", async (req, res) =>
     {
         const data = req.body
         const result = await updateInscrito(data)
-
-        console.log("RESULT", result)
+        
         res.json(
         {
             message: 'Usuario Skater Actualizado',
@@ -77,6 +78,29 @@ router.put("/status", async (req, res) =>
         res.json(
         {
             message: "Estatus actualizado."
+        })
+    } 
+    catch (error) 
+    {
+        res.status(500).json(
+        {
+            message: 'Internal Server Error'
+        })
+        console.error(error)
+    }
+})
+
+router.post("/", async (req, res) => 
+{
+    try 
+    {
+        const data = req.body
+        const result = await createInscrito(data)
+
+        res.json(
+        {
+            message: 'Success',
+            inscrito: result.rows[0]
         })
     } 
     catch (error) 

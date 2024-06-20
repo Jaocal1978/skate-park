@@ -26,7 +26,7 @@
                 <td>{{this.anos_experiencia}}</td>
                 <td>{{this.especialidad}}</td>
                 <td>
-                    <input type="checkbox" {{#if this.estado}} checked {{/if}} 
+                    <input id="status" name="status" type="checkbox" {{#if this.estado}} checked {{/if}} 
                         onclick="handleChange({{this.id}}, this)"
                     />
                     
@@ -35,6 +35,7 @@
             {{/each}}
         </tbody>
     </table>
+    <a href="/">Ir a Home</a>
 </div>
 
 <script>

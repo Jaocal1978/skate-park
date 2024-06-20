@@ -37,115 +37,135 @@
         <div>
             <button id="btnEliminar" name="btnEliminar"  class="btn btn-danger">Eliminar cuenta</button>
         </div>
-        
+        <a href="/admin">Ir a Administración</a>
     </form>
 </div>
 
 <script>
-    document.getElementById("formActualizar").addEventListener("submit", async (event) => 
+    document.getElementById("formActualizar").addEventListener("submit", async (event) =>
     {
-        event.preventDefault()
-        
-        const action = event.submitter.id
-        if(action == 'btnActualizar') 
-        {
-            let password = document.querySelector("#password").value;
-            let rptpassword = document.querySelector("#rptpassword").value;
+         event.preventDefault()
 
-            if(password != rptpassword) 
+        let email = document.querySelector('#email').value;
+        let nombre = document.querySelector("#nombre").value;
+        let password = document.querySelector("#password").value;
+        let rptpassword = document.querySelector("#rptpassword").value;
+        let experiencia = document.querySelector("#experiencia").value;
+        let especialidad = document.querySelector('#especialidad').value;
+
+
+        const action = event.submitter.id
+        if (action == 'btnActualizar') 
+        {
+            console.log(password, rptpassword);
+
+            if(email == "" || password == "" || rptpassword == "" || nombre == "" || experiencia == "" || especialidad == "")
             {
                 Swal.fire(
                 {
                     title: 'Error!',
-                    text: 'Passwords no son identicos.',
+                    text: 'LLene los campos en blanco por favor.',
                     icon: 'error',
                     confirmButtonText: 'Aceptar'
-                })
-
-                return
+                });
             }
-
-            try 
+            else
             {
-                const formData = new FormData(event.target)
-                formData.append("email", event.target.email.value)
-
-                const response = await fetch("/inscritos", {
-                    method: "PUT",
-                    body: formData
-                })
-
-                const data = await response.json()
-                if (response.status == 500) 
+                if(password != rptpassword) 
                 {
                     Swal.fire(
                     {
                         title: 'Error!',
-                        text: 'Error de servidor, inténtalo más tarde',
+                        text: 'Los Password no son Iguales.',
                         icon: 'error',
                         confirmButtonText: 'Aceptar'
-                    })
+                    });
                 }
-
-                if(response.status == 200) 
+                else 
                 {
-                    Swal.fire(
+                    const response = await fetch("/inscritos",
                     {
-                        title: 'Skater Actualizado!',
-                        text: `Usuario Skater actualizado con éxito`,
+                        method: "PUT",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(
+                        {
+                            email, nombre, password, experiencia, especialidad
+                        })
+                    });
+
+                    if(response.status == 200)
+                    {
+                        const data = await response.json();
+                        Swal.fire({
+                            title: 'Actualización!',
+                            text: 'Skater actualizado con exito.',
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                    else
+                    {
+                        Swal.fire(
+                        {
+                            title: 'Error!',
+                            text: 'No fue posible hacer las modificaciones, Error interno del servidor.',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                }
+            }
+        }
+        else
+        {
+            if(email == "")
+            {
+                Swal.fire(
+                {
+                    title: 'Error!',
+                    text: 'Falta Email.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+            else
+            {
+                const response = await fetch(`/inscritos?email=${email}`, {
+                    method: "DELETE",
+                })
+
+                console.log(response);
+
+                if(response.status == 200)
+                {
+                    const data = await response.json();
+                    Swal.fire({
+                        title: 'Eliminado!',
+                        text: 'Skater eliminado con exito.',
                         icon: 'success',
                         confirmButtonText: 'Aceptar'
                     })
-                    
-                    window.location = "/"
+                    .then((result) => 
+                    {
+                        if (result.isConfirmed) 
+                        {
+                            window.location = "/";
+                        }
+                    })
                 }
-
-            } 
-            catch (error) 
-            {
-                Swal.fire(
+                else 
                 {
-                    title: 'Error!',
-                    text: 'Error no fue posible actualizar el usuario Skater.',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                })
-                console.error("Network error", error)
-            }
-        } 
-        else 
-        {
-            let email = document.querySelector("#email").value;
-
-            const response = await fetch(`/inscrito?email=${email}`, 
-            {
-                method: "DELETE",
-            })
-
-            const data = response.json()
-
-            if (response.status == 500) 
-            {
-                Swal.fire(
-                {
-                    title: 'Error!',
-                    text: 'Error de servidor, inténtalo más tarde',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                })
-            } 
-            else 
-            {
-                Swal.fire(
-                {
-                    title: 'Skater Eliminado!',
-                    text: `Usuario eliminado con éxito`,
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                })
-                window.location = "/"
+                    Swal.fire(
+                    {
+                        title: 'Error!',
+                        text: 'No fue posible eliminar al skater, Error interno del servidor.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
             }
         }
-    })
-
+    });
 </script>

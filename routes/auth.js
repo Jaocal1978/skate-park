@@ -5,25 +5,26 @@ import path from 'node:path'
 
 const router = Router();
 
-router.post("/login", async (req, res) =>
+router.post("/logins", async (req, res) =>
 {
     try 
     {
         const data = req.body;
+        //console.log(data);
         const inscrito = await getInscrito(data);
-
+        console.log(inscrito.rows);
         if(inscrito.rowCount == 0)
         {
             res.status(404).json(
             {
-                message: 'User no existe o password incorrecto'
+                message: 'Usuario no existe'
             })
         }
         else if(data.password != inscrito.rows[0].password)
         {
             res.status(400).json(
             {
-                message: 'User no existe o password incorrecto'
+                message: 'Usuario no existe o password incorrecto'
             })
         }
         else
@@ -36,9 +37,10 @@ router.post("/login", async (req, res) =>
                 especialidad: inscrito.rows[0].especialidad,
                 estado: inscrito.rows[0].estado
             }
-
+            
             const secret = process.env.JWT_SECRET;
             const token = jwt.sign(payload, secret, { expiresIn: '1d'});
+
             res.json(
             {
                 token: token
@@ -48,7 +50,7 @@ router.post("/login", async (req, res) =>
     catch (error) 
     {
         res.status(500).json({
-            message: 'Internal Server Error'
+            message: 'Error interno del servidor'
         })
         console.error(error)
     }
@@ -61,7 +63,6 @@ router.post("/registro", async (req, res) =>
         const { email } = req.body;
         const data = req.body;
         const inscrito = await getInscrito({email});
-        console.log(inscrito);
 
         if(inscrito.rowCount > 0)
         {

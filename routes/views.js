@@ -6,16 +6,29 @@ const router  = Router()
 //Todos
 router.get("/", async (req, res) => 
 {
-    const inscritos = await getInscritos()
+    const inscritos = await getInscritos();
+
+    for (let i = 0; i < inscritos.rows.length; i++) 
+    {
+        if(inscritos.rows[i].estado == false)
+        {
+            inscritos.rows[i].estado = "En Revisión";
+        }
+        else
+        {
+             inscritos.rows[i].estado = "Aceptado";
+        }
+    }
+    
     res.render("home", {
         inscritos: inscritos.rows
     })
 })
 
 // Login
-router.get("/login", async(req, res) => 
+router.get("/logins", async(req, res) => 
 {
-    res.render("login")
+    res.render("logins")
 })
 
 //Registro

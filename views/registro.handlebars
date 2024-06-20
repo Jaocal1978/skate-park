@@ -50,11 +50,21 @@
 
         if(email.value == "" || nombre.value == "" || password.value == "" || rptpassword.value == "" || experiencia.value == "" || especialidad.value == "" || foto.value == "")
         {
-            alert("Ingrese los campos requeridos.");
+            Swal.fire({
+                title: 'Error!',
+                text: 'Ingrese los campos requeridos.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         }
         else if(password.value != rptpassword.value)
         {
-            alert("Los Password son diferentes.");
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error los passwors no son igueles, intente nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            })
         }
         else
         {
@@ -64,24 +74,37 @@
                 body: formData
             })
 
-            const data = await response.json();
-            event.target.innerHTML = data.html 
-
-            console.log(data)
-
-            const token = data.token
-            sessionStorage.setItem('token', token)
-
             if(response.status == 200)
             {
+                const data = await response.json();
+                event.target.innerHTML = data.html
+
+                const token = data.token
+                sessionStorage.setItem('token', token)
+
                 Swal.fire({
                     title: 'Skater creado!',
                     text: 'Skater Creado con exito.',
                     icon: 'success',
                     confirmButtonText: 'Aceptar'
                 })
+                .then((result) => 
+                {
+                    if (result.isConfirmed) 
+                    {
+                        window.location = '/datos' + `?token=${sessionStorage.getItem('token')}`
+                    }
+                })
             }
-            window.location = '/datos' + `?token=${sessionStorage.getItem('token')}`
+            else
+            {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Usuario no existe o password incorrecto, Error interno del servidor.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                })
+            }
         }
     })
 </script>
