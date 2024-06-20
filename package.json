@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-fileupload": "^1.5.0",
+    "express-handlebars": "^7.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "path": "^0.12.7",
+    "pg": "^8.12.0"
+  },
+  "name": "skate_park",
+  "version": "1.0.0",
+  "description": "Desafio SkatePark",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JAOC",
+  "license": "ISC"
+}
